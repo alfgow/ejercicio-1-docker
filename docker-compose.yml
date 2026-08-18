@@ -1,0 +1,5 @@
+services:
+  db:
+    container-name: postgres
+    image: postgres:14.24-alpine3.23
+  
