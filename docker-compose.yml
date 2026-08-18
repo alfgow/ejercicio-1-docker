@@ -1,5 +1,29 @@
 services:
   db:
-    container-name: postgres
+    container_name: postgres
     image: postgres:14.24-alpine3.23
-  
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  app:
+    container_name: ola-ke-aze
+    image: node:20.6.0-alpine3.23
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: ["node", "index.js"]
+    depends_on:
+      - db
+  nginx:
+    container_name: nginx
+    image: nginx:1.30.4-trixie-perl
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
